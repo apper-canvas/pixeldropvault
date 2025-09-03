@@ -60,13 +60,14 @@ const completedFile = {
         );
         
         toast.success(`${file.name} uploaded successfully!`);
-toast.success(`${file.name} uploaded successfully!`);
-      } else {
+} else {
         setFiles(prev => 
           prev.map(f => f.id === fileId
             ? { ...f, progress_c: Math.min(currentProgress, 100) }
             : f
           )
+        );
+      }
     }, updateInterval);
     
     return newFile;
