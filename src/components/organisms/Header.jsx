@@ -1,8 +1,12 @@
 import { motion } from "framer-motion";
+import { useContext } from "react";
+import { useSelector } from "react-redux";
 import ApperIcon from "@/components/ApperIcon";
 import Button from "@/components/atoms/Button";
-
+import { AuthContext } from "../App";
 const Header = ({ onShowStats }) => {
+  const { logout } = useContext(AuthContext);
+  const { user, isAuthenticated } = useSelector((state) => state.user);
   return (
     <motion.header
       initial={{ opacity: 0, y: -20 }}
@@ -45,24 +49,50 @@ const Header = ({ onShowStats }) => {
                 <span>Easy Share</span>
               </div>
             </div>
-            
-            <Button
-              variant="outline"
-              size="sm"
-              icon="BarChart3"
-              onClick={onShowStats}
-              className="hidden md:flex"
-            >
-              Stats
-            </Button>
-            
-            <Button
-              variant="ghost"
-              size="icon"
-              className="md:hidden text-gray-400 hover:text-white"
-            >
-              <ApperIcon name="Menu" className="w-5 h-5" />
-            </Button>
+<div className="flex items-center space-x-3">
+              {isAuthenticated && user && (
+                <div className="hidden sm:flex items-center space-x-3">
+                  <div className="text-right">
+                    <p className="text-sm font-medium text-white">
+                      {user.firstName} {user.lastName}
+                    </p>
+                    <p className="text-xs text-gray-400">
+                      {user.emailAddress}
+                    </p>
+                  </div>
+                </div>
+              )}
+              
+              <Button
+                variant="outline"
+                size="sm"
+                icon="BarChart3"
+                onClick={onShowStats}
+                className="hidden md:flex"
+              >
+                Stats
+              </Button>
+              
+              {isAuthenticated ? (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  icon="LogOut"
+                  onClick={logout}
+                  className="text-gray-400 hover:text-white"
+                >
+                  Logout
+                </Button>
+              ) : (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="md:hidden text-gray-400 hover:text-white"
+                >
+                  <ApperIcon name="Menu" className="w-5 h-5" />
+                </Button>
+              )}
+            </div>
           </div>
         </div>
       </div>

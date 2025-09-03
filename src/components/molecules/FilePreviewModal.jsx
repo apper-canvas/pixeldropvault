@@ -8,8 +8,10 @@ const FilePreviewModal = ({ file, isOpen, onClose }) => {
   if (!file) return null;
   
   const handleCopyLink = async () => {
-    if (file.url) {
+const fileUrl = file.url_c || file.url;
+    if (fileUrl) {
       try {
+await navigator.clipboard.writeText(fileUrl);
         await navigator.clipboard.writeText(file.url);
         toast.success("Link copied to clipboard!");
       } catch (error) {
@@ -19,10 +21,11 @@ const FilePreviewModal = ({ file, isOpen, onClose }) => {
   };
   
   const handleDownload = () => {
-    if (file.url) {
-      const link = document.createElement("a");
-      link.href = file.url;
-      link.download = file.name;
+const fileUrl = file.url_c || file.url;
+    if (fileUrl) {
+      const link = document.createElement('a');
+      link.href = fileUrl;
+      link.download = file.name_c || file.name;
       link.click();
     }
   };
@@ -48,7 +51,7 @@ const FilePreviewModal = ({ file, isOpen, onClose }) => {
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h2 className="text-xl font-bold text-white font-display">
-                  {file.name}
+{file.name_c || file.name}
                 </h2>
                 <p className="text-gray-400 text-sm">
                   {formatFileSize(file.size)}
@@ -56,7 +59,7 @@ const FilePreviewModal = ({ file, isOpen, onClose }) => {
               </div>
               
               <div className="flex items-center space-x-2">
-                {file.url && (
+{(file.url_c || file.url) && (
                   <>
                     <Button
                       variant="outline"
@@ -90,12 +93,12 @@ const FilePreviewModal = ({ file, isOpen, onClose }) => {
             
             {/* Preview Content */}
             <div className="flex justify-center items-center bg-gray-900/50 rounded-xl p-8 min-h-[400px]">
-              {file.thumbnailUrl || file.url ? (
+{(file.thumbnail_url_c || file.thumbnailUrl || file.url_c || file.url) ? (
                 <motion.img
                   initial={{ scale: 0.9, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ delay: 0.1 }}
-                  src={file.thumbnailUrl || file.url}
+                  src={file.thumbnail_url_c || file.thumbnailUrl || file.url_c || file.url}
                   alt={file.name}
                   className="max-w-full max-h-[60vh] object-contain rounded-lg shadow-2xl"
                 />
@@ -114,12 +117,12 @@ const FilePreviewModal = ({ file, isOpen, onClose }) => {
             <div className="mt-6 grid grid-cols-2 gap-4 text-sm">
               <div>
                 <span className="text-gray-400">File type:</span>
-                <span className="ml-2 text-white">{file.type}</span>
+<span className="ml-2 text-white">{file.type_c || file.type}</span>
               </div>
               <div>
                 <span className="text-gray-400">Uploaded:</span>
                 <span className="ml-2 text-white">
-                  {new Date(file.uploadedAt).toLocaleDateString()}
+{new Date(file.uploaded_at_c || file.uploadedAt).toLocaleDateString()}
                 </span>
               </div>
             </div>

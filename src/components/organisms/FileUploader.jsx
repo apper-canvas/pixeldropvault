@@ -1,11 +1,11 @@
-import { useState, useCallback, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import DropZone from "@/components/molecules/DropZone";
-import FileCard from "@/components/molecules/FileCard";
-import Button from "@/components/atoms/Button";
-import Empty from "@/components/ui/Empty";
-import { formatFileSize, formatUploadSpeed, formatTimeRemaining, generateThumbnail } from "@/utils/fileUtils";
+import React, { useCallback, useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { toast } from "react-toastify";
+import { formatFileSize, formatTimeRemaining, formatUploadSpeed, generateThumbnail } from "@/utils/fileUtils";
+import FileCard from "@/components/molecules/FileCard";
+import DropZone from "@/components/molecules/DropZone";
+import Empty from "@/components/ui/Empty";
+import Button from "@/components/atoms/Button";
 
 const FileUploader = ({ onUploadComplete, onFilePreview }) => {
   const [files, setFiles] = useState([]);
@@ -20,16 +20,17 @@ const FileUploader = ({ onUploadComplete, onFilePreview }) => {
     // Generate thumbnail for images
     const thumbnailUrl = await generateThumbnail(file);
     
-    const newFile = {
+const newFile = {
       id: fileId,
-      name: file.name,
-      size: file.size,
-      type: file.type,
-      status: "uploading",
-      progress: 0,
-      uploadedAt: new Date().toISOString(),
-      thumbnailUrl,
-      url: null
+      Id_c: fileId,
+      name_c: file.name,
+      size_c: file.size,
+      type_c: file.type,
+      status_c: "uploading",
+      progress_c: 0,
+      uploaded_at_c: new Date().toISOString(),
+      thumbnail_url_c: thumbnailUrl,
+      url_c: null
     };
     
     setFiles(prev => [...prev, newFile]);
@@ -47,11 +48,11 @@ const FileUploader = ({ onUploadComplete, onFilePreview }) => {
         clearInterval(progressInterval);
         
         // Complete upload
-        const completedFile = {
+const completedFile = {
           ...newFile,
-          status: "completed",
-          progress: 100,
-          url: `https://dropvault.com/files/${fileId}/${encodeURIComponent(file.name)}`
+          status_c: "completed",
+          progress_c: 100,
+          url_c: `https://dropvault.com/files/${fileId}/${encodeURIComponent(file.name)}`
         };
         
         setFiles(prev => 
@@ -59,14 +60,13 @@ const FileUploader = ({ onUploadComplete, onFilePreview }) => {
         );
         
         toast.success(`${file.name} uploaded successfully!`);
+toast.success(`${file.name} uploaded successfully!`);
       } else {
         setFiles(prev => 
-          prev.map(f => f.id === fileId 
-            ? { ...f, progress: Math.min(currentProgress, 100) }
+          prev.map(f => f.id === fileId
+            ? { ...f, progress_c: Math.min(currentProgress, 100) }
             : f
           )
-        );
-      }
     }, updateInterval);
     
     return newFile;
@@ -79,14 +79,14 @@ const FileUploader = ({ onUploadComplete, onFilePreview }) => {
       const uploadPromises = droppedFiles.map(file => simulateUpload(file));
       const uploadedFiles = await Promise.all(uploadPromises);
       
-      // Create upload group for sharing
+// Create upload group for sharing
       const upload = {
-        id: Date.now(),
-        files: uploadedFiles,
-        totalSize: droppedFiles.reduce((total, file) => total + file.size, 0),
-        shareLink: `https://dropvault.com/share/${Date.now()}`,
-        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-        createdAt: new Date().toISOString()
+        Id_c: Date.now(),
+        files_c: uploadedFiles,
+        total_size_c: droppedFiles.reduce((total, file) => total + file.size, 0),
+        share_link_c: `https://dropvault.com/share/${Date.now()}`,
+        expires_at_c: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+        created_at_c: new Date().toISOString()
       };
       
       setTimeout(() => {

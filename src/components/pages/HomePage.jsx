@@ -22,21 +22,27 @@ const HomePage = () => {
     successRate: 100
   });
 
-  const handleUploadComplete = (upload) => {
+const handleUploadComplete = (upload) => {
     setCurrentUpload(upload);
     setShowSuccessCard(true);
     
     // Update stats
+    const filesCount = upload.files_c ? JSON.parse(upload.files_c).length : (upload.files?.length || 0);
+    const totalSize = upload.total_size_c || upload.totalSize || 0;
+    
     setUploadStats(prev => ({
-      totalFiles: prev.totalFiles + upload.files.length,
-      totalSize: prev.totalSize + upload.totalSize,
+      totalFiles: prev.totalFiles + filesCount,
+      totalSize: prev.totalSize + totalSize,
       successRate: 100 // Simulate perfect success rate for demo
     }));
     
     // Auto-copy share link
-    navigator.clipboard.writeText(upload.shareLink).then(() => {
-      toast.success("Share link copied to clipboard!");
-    });
+    const shareLink = upload.share_link_c || upload.shareLink;
+    if (shareLink) {
+      navigator.clipboard.writeText(shareLink).then(() => {
+        toast.success("Share link copied to clipboard!");
+      });
+    }
   };
 
   const handleFilePreview = (file) => {
@@ -99,12 +105,12 @@ const HomePage = () => {
                         transition={{ delay: 0.4 }}
                         className="space-y-2 mb-4"
                       >
-                        <p className="text-gray-300">
-                          Successfully uploaded {currentUpload.files.length} {currentUpload.files.length === 1 ? "file" : "files"} 
-                          ({formatFileSize(currentUpload.totalSize)})
+<p className="text-gray-300">
+                          Successfully uploaded {currentUpload.files_c ? JSON.parse(currentUpload.files_c).length : (currentUpload.files?.length || 0)} {((currentUpload.files_c ? JSON.parse(currentUpload.files_c).length : (currentUpload.files?.length || 0)) === 1) ? "file" : "files"} 
+                          ({formatFileSize(currentUpload.total_size_c || currentUpload.totalSize || 0)})
                         </p>
                         <p className="text-sm text-gray-400 font-mono">
-                          Share link: {currentUpload.shareLink}
+                          Share link: {currentUpload.share_link_c || currentUpload.shareLink}
                         </p>
                       </motion.div>
                       
